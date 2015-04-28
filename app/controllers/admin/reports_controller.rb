@@ -6,9 +6,9 @@ class Admin::ReportsController < Admin::BaseController
 
   expose(:pdf_data) do
     if action_name == "download_feedbacks_pdf"
-      FeedbackPdfs::Base.new("all", nil, {category: params[:category]})
+      FeedbackPdfs::Base.new("all", nil, {category: params[:category], award_year: @award_year})
     else
-      CaseSummaryPdfs::Base.new("all", nil, {category: params[:category]})
+      CaseSummaryPdfs::Base.new("all", nil, {category: params[:category], award_year: @award_year })
     end
   end
 
@@ -34,7 +34,7 @@ class Admin::ReportsController < Admin::BaseController
   private
 
   def resource
-    @report ||= Reports::AdminReport.new(params[:id])
+    @report ||= Reports::AdminReport.new(params[:id], @award_year)
   end
 
   def render_pdf
