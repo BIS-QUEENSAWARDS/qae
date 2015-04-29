@@ -1,5 +1,6 @@
 .settings-page {
   .panel-body ul {
+    margin: 0;
     padding-left: 1.25em;
 
     li {
@@ -47,7 +48,7 @@
 
   .well {
     display: block;
-    max-width: 435px;
+    max-width: 440px;
     margin: 20px 0;
     background-color: $white-true;
     box-shadow: none;
@@ -142,6 +143,10 @@
         background: none;
         padding: 0;
         border: none;
+
+        .lte-ie7 & {
+          font-size: 16px;
+        }
       }
     }
   }
