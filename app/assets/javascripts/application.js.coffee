@@ -281,9 +281,6 @@ jQuery ->
   $("input[type='tel'].js-trigger-autosave").debounce "keyup", triggerAutosave, 50
   $("textarea.js-trigger-autosave").debounce "click", triggerAutosave, 50
 
-  # Fade out alerts after 10sec
-  $(".flash").delay(10000).fadeOut()
-
   updateUploadListVisiblity = (list, button, max) ->
     list_elements = list.find("li")
     count = list_elements.length
@@ -537,6 +534,7 @@ jQuery ->
           question.find(".list-add").find("li:last-child input").prop("disabled", false)
           clear_example = question.find(".list-add").attr("data-need-to-clear-example")
           if (typeof(clear_example) != typeof(undefined) && clear_example != false)
+            question.find(".list-add li.js-list-item:last .errors-container").empty()
             clearFormElements(question.find(".list-add li.js-list-item:last"))
 
           # If .js-add-example has file field (like in SupportLetters)
