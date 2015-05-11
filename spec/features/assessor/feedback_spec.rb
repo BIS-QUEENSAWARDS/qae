@@ -1,16 +1,16 @@
 require "rails_helper"
 include Warden::Test::Helpers
 
-describe "Assessor feedback management", js: true do
+describe "Assessor feedback management" do
   let(:assessor) { create(:assessor, :lead_for_all) }
-  let!(:form_answer) { create(:form_answer, :innovation) }
+  let(:form_answer) { create(:form_answer, :innovation) }
 
   before do
     login_as(assessor, scope: :assessor)
   end
 
   describe "feedback submission" do
-    it "submits feedback" do
+    it "submits feedback", js: true do
       visit assessor_form_answer_path(form_answer)
       find("#feedback-heading a").click
 
@@ -25,11 +25,15 @@ describe "Assessor feedback management", js: true do
   end
 
   describe "feedback approval" do
-    it "approves submitted feedback" do
+    before do
       feedback = form_answer.build_feedback
       feedback.submitted = true
       feedback.save!
 
+      form_answer.reload
+    end
+
+    it "approves submitted feedback", js: true do
       visit assessor_form_answer_path(form_answer)
       find("#feedback-heading a").click
       click_button "Approve feedback"
