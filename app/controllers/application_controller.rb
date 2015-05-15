@@ -5,10 +5,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  # TODO: remove back once go live
-  # unless (Rails.env.test? || Rails.env.development?)
-  #   ensure_security_headers
-  # end
+  ensure_security_headers if ENV["ENSURE_SECURITY_HEADERS"]
 
   before_filter :configure_permitted_parameters, if: :devise_controller?
 
@@ -68,6 +65,38 @@ class ApplicationController < ActionController::Base
   end
   helper_method :current_account
 
+  protected
+
+  def settings
+    Rails.cache.fetch("current_settings", expires_in: 1.minute) do
+      AwardYear.current.settings
+    end
+  end
+
+  def submission_started?
+    submission_started_deadline.passed?
+  end
+  helper_method :submission_started?
+
+  def submission_ended?
+    submission_deadline.passed?
+  end
+  helper_method :submission_ended?
+
+  def submission_started_deadline
+    Rails.cache.fetch("submission_start_deadline", expires_in: 1.minute) do
+      settings.deadlines.where(kind: "submission_start").first
+    end
+  end
+  helper_method :submission_started_deadline
+
+  def submission_deadline
+    Rails.cache.fetch("submission_end_deadline", expires_in: 1.minute) do
+      settings.deadlines.where(kind: "submission_end").first
+    end
+  end
+  helper_method :submission_deadline
+
   private
 
   def configure_permitted_parameters
@@ -118,26 +147,6 @@ class ApplicationController < ActionController::Base
                   notice: "Access denied!"
     end
   end
-
-  def settings
-    @settings ||= AwardYear.current.settings
-  end
-
-  def submission_started?
-    deadline = settings.deadlines.where(kind: "submission_start").first
-    deadline.passed?
-  end
-  helper_method :submission_started?
-
-  def submission_ended?
-    submission_deadline.passed?
-  end
-  helper_method :submission_ended?
-
-  def submission_deadline
-    @submission_deadline ||= settings.deadlines.where(kind: "submission_end").first
-  end
-  helper_method :submission_deadline
 
   def need_authentication?
     (Rails.env.staging? || Rails.env.production?) &&

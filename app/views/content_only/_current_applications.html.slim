@@ -1,4 +1,4 @@
-- if award_applications.any?
+- if award_applications && award_applications.any?
   table.applications-table
     colgroup
       col width="300"
@@ -27,8 +27,7 @@
                 = award.decorate.fill_progress_in_percents
                 '  completed
           td.pull-right
-            // TODO use better method to test for submitted awards
-            - if award.urn?
+            - if award.submitted?
               = link_to edit_form_path(award.id)
                 ' Edit
                 - if award.award_type == "promotion"
