@@ -9,11 +9,9 @@ class Admin::FormAnswersController < Admin::BaseController
 
     @search = FormAnswerSearch.new(@award_year.form_answers, current_admin).search(params[:search])
 
-    @form_answers = @search.results.uniq.page(params[:page]).includes(:comments)
-  end
-
-  def show
-    authorize @form_answer, :show?
+    @form_answers = @search.results.group("form_answers.id")
+                                   .page(params[:page])
+                                   .includes(:comments)
   end
 
   def update_financials
@@ -32,14 +30,6 @@ class Admin::FormAnswersController < Admin::BaseController
     end
   end
 
-  def review
-    authorize @form_answer, :review?
-    sign_in(@form_answer.user, bypass: true)
-    session[:admin_in_read_only_mode] = true
-
-    redirect_to edit_form_path(@form_answer)
-  end
-
   private
 
   helper_method :resource,
@@ -55,26 +45,6 @@ class Admin::FormAnswersController < Admin::BaseController
 
   def load_resource
     @form_answer = FormAnswer.find(params[:id]).decorate
-  end
-
-  def primary_assessment
-    @primary_assessment ||= resource.assessor_assignments.primary.decorate
-  end
-
-  def secondary_assessment
-    @secondary_assessment ||= resource.assessor_assignments.secondary.decorate
-  end
-
-  def moderated_assessment
-    @moderated_assessment ||= resource.assessor_assignments.moderated.decorate
-  end
-
-  def primary_case_summary_assessment
-    @primary_case_summary_assessment ||= resource.assessor_assignments.primary_case_summary.decorate
-  end
-
-  def lead_case_summary_assessment
-    @lead_case_summary_assessment ||= resource.assessor_assignments.lead_case_summary.decorate
   end
 
   def financial_data_ops

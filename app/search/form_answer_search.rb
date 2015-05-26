@@ -35,14 +35,14 @@ class FormAnswerSearch < Search
     scoped_results
       .joins("LEFT OUTER JOIN assessors on form_answers.primary_assessor_id = assessors.id")
       .select("form_answers.*, CONCAT(assessors.first_name, assessors.last_name) as assessor_full_name")
-      .order("assessor_full_name #{sort_order(desc)}")
+      .order("assessor_full_name #{sort_order(desc)}").group("assessors.first_name, assessors.last_name")
   end
 
   def sort_by_secondary_assessor_name(scoped_results, desc = false)
     scoped_results
       .joins("LEFT OUTER JOIN assessors on form_answers.secondary_assessor_id = assessors.id")
       .select("form_answers.*, CONCAT(assessors.first_name, assessors.last_name) as assessor_full_name")
-      .order("assessor_full_name #{sort_order(desc)}")
+      .order("assessor_full_name #{sort_order(desc)}").group("assessors.first_name, assessors.last_name")
   end
 
   def filter_by_status(scoped_results, value)
@@ -76,7 +76,7 @@ class FormAnswerSearch < Search
           "LEFT OUTER JOIN palace_attendees ON palace_attendees.palace_invite_id = palace_invites.id"
         ).where("palace_invites.id IS NULL OR palace_attendees.id IS NULL")
       when "missing_corp_responsibility"
-        q = "form_answers.document @> '\"corp_responsibility_form\"=>\"declare_now\"'::hstore"
+        q = "form_answers.document->>'corp_responsibility_form' = 'declare_now'"
         out = out.where(q)
       end
     end

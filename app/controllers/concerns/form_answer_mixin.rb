@@ -27,6 +27,18 @@ module FormAnswerMixin
     end
   end
 
+  def show
+    authorize resource, :show?
+  end
+
+  def review
+    authorize resource, :review?
+    sign_in(@form_answer.user, bypass: true)
+    session[:admin_in_read_only_mode] = true
+
+    redirect_to edit_form_path(@form_answer)
+  end
+
   private
 
   def update_params
@@ -35,5 +47,25 @@ module FormAnswerMixin
       :company_or_nominee_name,
       previous_wins_attributes: [:id, :year, :category, :_destroy]
     )
+  end
+
+  def primary_assessment
+    @primary_assessment ||= resource.assessor_assignments.primary.decorate
+  end
+
+  def secondary_assessment
+    @secondary_assessment ||= resource.assessor_assignments.secondary.decorate
+  end
+
+  def moderated_assessment
+    @moderated_assessment ||= resource.assessor_assignments.moderated.decorate
+  end
+
+  def primary_case_summary_assessment
+    @primary_case_summary_assessment ||= resource.assessor_assignments.primary_case_summary.decorate
+  end
+
+  def lead_case_summary_assessment
+    @lead_case_summary_assessment ||= resource.assessor_assignments.lead_case_summary.decorate
   end
 end

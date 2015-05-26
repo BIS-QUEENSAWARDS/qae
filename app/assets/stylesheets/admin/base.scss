@@ -257,6 +257,10 @@ table .ellipsis {
     border-color: $error-colour;
     background-color: $error-border-colour;
   }
+
+  .feedback-holder {
+    margin-bottom: 15px;
+  }
 }
 
 .input-group {
@@ -338,6 +342,10 @@ table .ellipsis {
 
     &:last-child {
       margin-right: 0;
+    }
+
+    &.pull-right {
+      margin-top: 0;
     }
   }
 }
@@ -516,7 +524,6 @@ table .ellipsis {
 // Alerts
 .alert-container {
   margin-bottom: 30px;
-  cursor: pointer;
   z-index: 10001;
 
   @include screen-sm-min {

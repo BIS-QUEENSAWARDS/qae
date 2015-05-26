@@ -13,7 +13,9 @@
       = link_to "#", class: "form-edit-link pull-right" do
         span.glyphicon.glyphicon-pencil
         ' Edit
-      = f.submit "Save", class: "btn btn-primary form-save-button pull-right"
+      .form-actions.text-right
+        = link_to "Cancel", "#", class: "btn btn-default form-cancel-link if-no-js-hide"
+        = f.submit "Save", class: "btn btn-primary form-save-button pull-right"
       .clear
 
     - if press_summary.body.present?
@@ -28,7 +30,9 @@
               - else
                 ' No comment by applicant
         - else
-          p.p-empty Applicant has confirmed the Press Book Notes
+          br
+          .alert.alert-success
+            ' Applicant has confirmed the Press Book Notes
       - else
         p.p-empty Applicant hasn't confirmed the Press Book Notes
 

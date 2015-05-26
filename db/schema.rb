@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150507143136) do
+ActiveRecord::Schema.define(version: 20150519123524) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -218,6 +218,7 @@ ActiveRecord::Schema.define(version: 20150507143136) do
     t.string   "attachable_type"
     t.string   "title"
     t.boolean  "restricted_to_admin", default: false
+    t.string   "question_key"
   end
 
   add_index "form_answer_attachments", ["form_answer_id"], name: "index_form_answer_attachments_on_form_answer_id", using: :btree
@@ -245,7 +246,7 @@ ActiveRecord::Schema.define(version: 20150507143136) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.hstore   "document"
+    t.hstore   "hstore_document"
     t.string   "award_type"
     t.integer  "account_id"
     t.string   "urn"
@@ -268,6 +269,7 @@ ActiveRecord::Schema.define(version: 20150507143136) do
     t.string   "company_details_editable_type"
     t.integer  "primary_assessor_id"
     t.integer  "secondary_assessor_id"
+    t.json     "document"
   end
 
   add_index "form_answers", ["account_id"], name: "index_form_answers_on_account_id", using: :btree

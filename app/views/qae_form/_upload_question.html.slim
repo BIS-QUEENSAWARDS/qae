@@ -5,7 +5,7 @@
   ul.js-uploaded-list.list-add
     - (question.input_value(json: true) || {}).to_a.sort_by{|o| o.first.to_i}.each do |(idx, el)|
 
-      - if el['file'].present? || el['link'].present?
+      - if (el['file'].present? && attachments[el['file'].to_i].present?) || el['link'].present?
         li class="#{'js-file-uploaded' if el['file'].present?}"
           div
             - if el['file'].present?
@@ -47,13 +47,13 @@
     span.button.button-add *possible_read_only_ops
       span
         | + Upload
-      input.fileinput-button.js-file-upload type="file" name="form[file]" id="q_#{question.key}" *possible_read_only_ops
+      input.fileinput-button.js-file-upload type="file" name="form[file]" id="q_#{question.key}" *possible_read_only_ops data-question-key=question.key
     - if question.links
       | &nbsp;
       a.button.button-add.js-file-upload data-add-link="1" href="#" *possible_read_only_ops
         | + Add website address
 
-  - if question.key == :org_chart && JSON.parse(@form_answer.document["org_chart"] || {}.to_json).blank?
+  - if question.key == :org_chart && @form_answer.document["org_chart"].blank?
     .if-js-hide
       = link_to "+ Upload", new_form_form_answer_organisational_chart_url(@form_answer.id),
                             class: "button button-add"

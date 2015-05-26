@@ -23,7 +23,7 @@ class Form::OrganisationalChartsController < Form::MaterialsBaseController
 
   expose(:existing_org_chart) do
     if existing_org_chart_doc.present?
-      JSON.parse(existing_org_chart_doc)
+      existing_org_chart_doc
     else
       {}
     end
@@ -40,13 +40,13 @@ class Form::OrganisationalChartsController < Form::MaterialsBaseController
     res["0"] = created_attachment_ops
 
     @form_answer.document.merge(
-      org_chart: res.to_json
+      org_chart: res
     )
   end
 
   expose(:remove_org_chart_result_doc) do
     @form_answer.document.merge(
-      org_chart: {}.to_json
+      org_chart: {}
     )
   end
 
@@ -57,7 +57,8 @@ class Form::OrganisationalChartsController < Form::MaterialsBaseController
     self.form_answer_attachment = current_user.form_answer_attachments.new(
       attachment_params.merge({
         form_answer_id: @form_answer.id,
-        original_filename: original_filename
+        original_filename: original_filename,
+        question_key: "org_chart"
       })
     )
 
